@@ -83,5 +83,47 @@ RSpec.describe "Api::V1::Plans", type: :request do
       end
     end
   end
+
+  # update
+  describe 'PUT /plans/:id' do
+    let(:valid_attributes) { { plan: { title: 'Shopping' } } }
+
+    context 'when the record exists' do
+      before { put "/api/v1/plans/#{plan_id}", params: valid_attributes }
+
+      it 'updates the record' do
+        json_response = JSON.parse(response.body)
+        expect(json_response['title']).to eq('Shopping')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before { put "/api/v1/plans/#{plan_id}", params: { plan: { title: '' } } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/can't be blank/)
+      end
+    end
+
+    context 'when the record does not exist' do
+      before { put "/api/v1/plans/#{100}", params: valid_attributes }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Plan/)
+      end
+    end
+  end
   
 end

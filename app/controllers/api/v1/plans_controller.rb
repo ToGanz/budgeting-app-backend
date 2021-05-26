@@ -1,5 +1,5 @@
 class Api::V1::PlansController < ApplicationController
-  before_action :set_plan, only: [:show]
+  before_action :set_plan, only: [:show, :update]
   
   def index
     plans = Plan.all
@@ -17,6 +17,14 @@ class Api::V1::PlansController < ApplicationController
       render json: plan, status: :created
     else
       render json: { errors: plan.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @plan.update(plan_params)
+      render json: @plan, status: :ok
+    else
+      render json: { errors: @plan.errors }, status: :unprocessable_entity
     end
   end
 
