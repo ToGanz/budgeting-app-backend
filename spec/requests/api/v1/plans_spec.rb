@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Api::Plans", type: :request do
+RSpec.describe "Api::V1::Plans", type: :request do
   #initialize test data
   let!(:plans) { create_list(:plan, 5) }
   let(:plan_id) { plans.first.id}
@@ -8,7 +8,7 @@ RSpec.describe "Api::Plans", type: :request do
   describe "GET /plans" do
     # make HTTP get request before each example
     before do 
-      get '/api/plans' 
+      get '/api/v1/plans' 
     end
 
     it 'returns plans' do
@@ -23,7 +23,7 @@ RSpec.describe "Api::Plans", type: :request do
   end
 
   describe "GET /plans/:id" do
-    before { get "/api/plans/#{plan_id}"}
+    before { get "/api//v1/plans/#{plan_id}"}
 
     context 'when the record exists' do
       it 'returns the plan' do
@@ -50,4 +50,5 @@ RSpec.describe "Api::Plans", type: :request do
     end
 
   end
+  
 end

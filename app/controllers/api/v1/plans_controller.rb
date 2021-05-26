@@ -1,4 +1,4 @@
-class Api::PlansController < ApplicationController
+class Api::V1::PlansController < ApplicationController
   before_action :set_plan, only: [:show]
   
   def index
