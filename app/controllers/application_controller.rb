@@ -4,6 +4,6 @@ class ApplicationController < ActionController::API
   private
 
   def handle_error(e)
-    render json: { error: e.to_s }, status: :not_found
+    render json: { errors: e.to_s }, status: :not_found
   end
 end

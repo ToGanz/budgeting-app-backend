@@ -5,6 +5,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
   let!(:plans) { create_list(:plan, 5) }
   let(:plan_id) { plans.first.id}
 
+  # index
   describe "GET /plans" do
     # make HTTP get request before each example
     before do 
@@ -22,6 +23,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
     end
   end
 
+  # show
   describe "GET /plans/:id" do
     before { get "/api//v1/plans/#{plan_id}"}
 
@@ -49,6 +51,37 @@ RSpec.describe "Api::V1::Plans", type: :request do
       end
     end
 
+  end
+
+  # create
+  describe 'POST /plans' do
+    # valid payload
+    let(:valid_attributes) { { plan: { title: 'Personal Finance' } } }
+
+    context 'when the request is valid' do
+      before { post '/api/v1/plans', params: valid_attributes }
+
+      it 'creates a plan' do
+        json_response = JSON.parse(response.body)
+        expect(json_response['title']).to eq('Personal Finance')
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before { post '/api/v1/plans', params: { plan: { title: '' } } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/can't be blank/)
+      end
+    end
   end
   
 end
