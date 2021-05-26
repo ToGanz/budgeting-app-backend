@@ -126,4 +126,13 @@ RSpec.describe "Api::V1::Plans", type: :request do
     end
   end
   
+  # destroy
+  describe 'DELETE /plans/:id' do
+    before { delete "/api/v1/plans/#{plan_id}" }
+
+    it 'returns status code 204' do
+      expect(response).to have_http_status(204)
+    end
+  end
+  
 end

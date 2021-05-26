@@ -1,5 +1,5 @@
 class Api::V1::PlansController < ApplicationController
-  before_action :set_plan, only: [:show, :update]
+  before_action :set_plan, only: [:show, :update, :destroy]
   
   def index
     plans = Plan.all
@@ -26,6 +26,11 @@ class Api::V1::PlansController < ApplicationController
     else
       render json: { errors: @plan.errors }, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @plan.destroy
+    head :no_content
   end
 
   private
