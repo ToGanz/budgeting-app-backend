@@ -24,6 +24,19 @@ RSpec.describe "Api::V1::Transactions", type: :request do
         expect(response).to have_http_status(200)
       end
     end
+
+    context 'when plan does not exist' do
+      let(:plan_id) { 0 }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Plan/)
+      end
+    end
+
   end
 
 
