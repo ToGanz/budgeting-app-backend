@@ -4,5 +4,6 @@ FactoryBot.define do
     spending { false }
     amount { Faker::Number.decimal(l_digits: 2) }
     plan
+    category
   end
 end

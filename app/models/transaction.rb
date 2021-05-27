@@ -3,7 +3,7 @@ class Transaction < ApplicationRecord
   validates :description, presence: true
 
   belongs_to :plan
-
+  belongs_to :category
 
   private
 
