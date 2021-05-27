@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     before { get "/api//v1/plans/#{plan_id}/transactions/#{id}"}
 
     context 'when the record exists' do
-      it 'returns the plan' do
+      it 'returns the transaction' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
         expect(json_response['id']).to eq(id)
@@ -68,6 +68,43 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     end
 
   end # end of show
+
+  # create
+  describe 'POST /plans/:plan_id/transactions' do
+    # valid payload
+    let(:valid_attributes) do 
+      { transaction: { 
+          description: 'Groceries',
+          amount: "12.00"
+        } 
+      } 
+    end
+
+    context 'when the request is valid' do
+      before { post "/api/v1/plans/#{plan_id}/transactions", params: valid_attributes }
+
+      it 'creates a transaction' do
+        json_response = JSON.parse(response.body)
+        expect(json_response['description']).to eq('Groceries')
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before { post "/api/v1/plans/#{plan_id}/transactions", params: { transaction: { description: '' } } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/can't be blank/)
+      end
+    end
+  end # end of create
 
 
 end

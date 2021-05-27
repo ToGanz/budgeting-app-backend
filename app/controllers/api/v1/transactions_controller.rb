@@ -11,6 +11,16 @@ class Api::V1::TransactionsController < ApplicationController
     render json: @transaction, status: :ok
   end
 
+  def create
+    transaction = @plan.transactions.build(transaction_params)
+
+    if transaction.save
+      render json: transaction, status: :created
+    else
+      render json: { errors: transaction.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_plan
@@ -19,5 +29,9 @@ class Api::V1::TransactionsController < ApplicationController
 
   def set_transaction
     @transaction = @plan.transactions.find_by!(id: params[:id]) if @plan
+  end
+
+  def transaction_params
+    params.require(:transaction).permit(:description, :amount)
   end
 end
