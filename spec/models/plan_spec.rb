@@ -24,4 +24,12 @@ RSpec.describe Plan, type: :model do
       expect(subject.errors[:title]).to include('has already been taken')
     end
   end
+
+  context 'destroy plan should destroy linked transactions' do
+    before { FactoryBot.create(:transaction, plan: subject) }
+
+    it 'is not valid' do
+      expect { subject.destroy }.to change { Transaction.count }.by(-1)
+    end
+  end
 end
