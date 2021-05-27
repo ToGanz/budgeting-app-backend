@@ -21,6 +21,14 @@ class Api::V1::TransactionsController < ApplicationController
     end
   end
 
+  def update
+    if @transaction.update(transaction_params)
+      render json: @transaction, status: :ok
+    else
+      render json: { errors: @transaction.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_plan
