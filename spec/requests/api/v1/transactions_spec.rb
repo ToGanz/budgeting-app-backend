@@ -107,7 +107,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
   end # end of create
 
   # update
-  describe 'PUT /plans/:plans_id/transactions/:id' do
+  describe 'PUT /plans/:plan_id/transactions/:id' do
     let(:valid_attributes) { { transaction: { description: 'Shopping' } } }
 
     context 'when the record exists' do
@@ -147,5 +147,14 @@ RSpec.describe "Api::V1::Transactions", type: :request do
       end
     end
   end # end of update
+
+  # destroy
+  describe 'DELETE /plans/:plan_id/transactions/:id' do
+    before { delete "/api/v1/plans/#{plan_id}/transactions/#{id}" }
+
+    it 'returns status code 204' do
+      expect(response).to have_http_status(204)
+    end
+  end
 
 end

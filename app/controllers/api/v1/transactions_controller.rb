@@ -29,6 +29,11 @@ class Api::V1::TransactionsController < ApplicationController
     end
   end
 
+  def destroy
+    @transaction.destroy
+    head :no_content
+  end
+
   private
 
   def set_plan
