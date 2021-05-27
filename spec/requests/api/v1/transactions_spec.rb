@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "Api::V1::Transactions", type: :request do
   # Initialize the test data
   let!(:plan) { create(:plan) }
+  let!(:category) { create(:category) }
   let!(:transactions) { create_list(:transaction, 20, plan_id: plan.id) }
   let(:plan_id) { plan.id }
   let(:id) { transactions.first.id }
@@ -75,7 +76,8 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     let(:valid_attributes) do 
       { transaction: { 
           description: 'Groceries',
-          amount: "12.00"
+          amount: "12.00",
+          category_id: category.id
         } 
       } 
     end
