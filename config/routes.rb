@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :plans do
         resources :transactions
       end
+      resources :categories
     end
   end
 end
