@@ -34,4 +34,74 @@ RSpec.describe "Api::V1::Users", type: :request do
     end
 
   end # end of show
+
+  # create
+  describe 'POST /users' do
+    # valid payload
+    let(:valid_attributes) do 
+      { 
+        user: { 
+          name: 'tobi', 
+          email: 'test@test.com',
+          password: 'password',
+        } 
+      } 
+    end
+
+    context 'when the request is valid' do
+      before { post '/api/v1/users', params: valid_attributes }
+
+      it 'creates a user' do
+        json_response = JSON.parse(response.body)
+        expect(json_response['name']).to eq('tobi')
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before do
+        post '/api/v1/users', 
+          params: { 
+            user: { 
+              name: '', 
+              email: 'test@test.com',
+              password: 'password'
+            } 
+          }
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/can't be blank/)
+      end
+    end
+
+    context 'when the email is taken' do
+      before do
+        post '/api/v1/users', 
+          params: { 
+            user: { 
+              name: 'tobi', 
+              email: users.first.email,
+              password: 'password'
+            } 
+          }
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/has already been taken/)
+      end
+    end
+  end # end of create
+
 end
