@@ -6,7 +6,7 @@ Rails.application.routes.draw do
         resources :transactions
       end
       resources :categories
-      resources :users, only: [:show, :create]
+      resources :users, only: [:show, :create, :update]
     end
   end
 end

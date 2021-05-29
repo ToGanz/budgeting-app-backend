@@ -104,4 +104,51 @@ RSpec.describe "Api::V1::Users", type: :request do
     end
   end # end of create
 
+  # update
+  describe 'PUT /users/:id' do
+    let(:valid_attributes) do 
+      { 
+        user: { 
+          name: 'thilo'
+        } 
+      } 
+    end
+
+    context 'when the record exists' do
+      before { put "/api/v1/users/#{user_id}", params: valid_attributes }
+
+      it 'updates the record' do
+        json_response = JSON.parse(response.body)
+        expect(json_response['name']).to eq('thilo')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before { put "/api/v1/users/#{user_id}", params: { user: { name: '' } } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/can't be blank/)
+      end
+    end
+
+    context 'when the record does not exist' do
+      before { put "/api/v1/users/#{100}", params: valid_attributes }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find User/)
+      end
+    end
+  end # end of update
 end
