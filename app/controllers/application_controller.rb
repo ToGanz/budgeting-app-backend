@@ -13,6 +13,10 @@ class ApplicationController < ActionController::API
     @current_user = User.find(decoded[:user_id]) rescue ActiveRecord::RecordNotFound
   end
 
+  def check_login
+    head :forbidden unless self.current_user
+  end
+
   private
 
   def not_found_error(e)
