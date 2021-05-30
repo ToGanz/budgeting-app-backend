@@ -2,14 +2,16 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Plans", type: :request do
   # initialize test data
-  let!(:plans) { create_list(:plan, 5) }
+  let(:user) { create(:user) }
+  let!(:plans) { create_list(:plan, 5, user_id: user.id) }
   let(:plan_id) { plans.first.id}
+  let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user_id) } }
 
   # index
   describe "GET /plans" do
     # make HTTP get request before each example
     before do 
-      get '/api/v1/plans' 
+      get '/api/v1/plans'
     end
 
     it 'returns plans' do

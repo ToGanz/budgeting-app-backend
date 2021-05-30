@@ -45,4 +45,12 @@ RSpec.describe User, type: :model do
       expect(subject.errors[:email]).to include('has already been taken')
     end 
   end
+
+  context 'destroy user should destroy linked plans' do
+    before { FactoryBot.create(:plan, user: subject) }
+
+    it 'is not valid' do
+      expect { subject.destroy }.to change { Plan.count }.by(-1)
+    end
+  end
 end

@@ -17,8 +17,9 @@ RSpec.describe Plan, type: :model do
   end
 
 	context 'title is not unique' do
-    before { Plan.create(title: 'Same title') }
-    subject { Plan.create(title: 'Same title') }
+    let(:user) { FactoryBot.create(:user) }
+    before { Plan.create(title: 'Same title', user: user) }
+    subject { Plan.create(title: 'Same title', user: user) }
 
     it 'is not valid' do
       expect(subject.errors[:title]).to include('has already been taken')

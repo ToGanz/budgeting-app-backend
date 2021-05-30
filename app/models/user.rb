@@ -5,4 +5,6 @@ class User < ApplicationRecord
   validates_format_of :email, with: /@/ 
   validates :name, presence: true
   validates :password_digest, presence: true
+
+  has_many :plans, dependent: :destroy
 end
