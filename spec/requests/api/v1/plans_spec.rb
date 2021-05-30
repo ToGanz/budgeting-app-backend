@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Plans", type: :request do
-  #initialize test data
+  # initialize test data
   let!(:plans) { create_list(:plan, 5) }
   let(:plan_id) { plans.first.id}
 

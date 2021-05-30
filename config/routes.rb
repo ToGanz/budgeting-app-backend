@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       end
       resources :categories
       resources :users, only: [:show, :create, :update, :destroy]
+      post 'auth/login', to: 'authentications#authenticate'
     end
   end
 end
