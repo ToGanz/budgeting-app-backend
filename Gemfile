@@ -48,4 +48,6 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'pry'
+
+# adds encode and decode methods
 gem "jwt", "~> 2.2"
