@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
-  rescue_from ActiveRecord::RecordNotFound, with: :handle_error
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found_error
+  rescue_from JWT::DecodeError, with: :decode_error
 
   def current_user
     return @current_user if @current_user 
@@ -14,7 +15,11 @@ class ApplicationController < ActionController::API
 
   private
 
-  def handle_error(e)
+  def not_found_error(e)
     render json: { errors: e.to_s }, status: :not_found
+  end
+
+  def decode_error(e)
+    render json: { errors: e.to_s }, status: :unprocessable_entity
   end
 end

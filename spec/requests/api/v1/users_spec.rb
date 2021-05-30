@@ -4,6 +4,7 @@ RSpec.describe "Api::V1::Users", type: :request do
   #initialize test data
   let!(:users) { create_list(:user, 5) }
   let(:user_id) { users.first.id}
+  let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user_id) } }
 
   # show
   describe "GET /users/:id" do
@@ -114,8 +115,16 @@ RSpec.describe "Api::V1::Users", type: :request do
       } 
     end
 
-    context 'when the record exists' do
+    context 'when not authorized' do
       before { put "/api/v1/users/#{user_id}", params: valid_attributes }
+
+      it 'returns forbidden' do
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when the record exists' do
+      before { put "/api/v1/users/#{user_id}", params: valid_attributes, headers: valid_headers }
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
@@ -128,7 +137,7 @@ RSpec.describe "Api::V1::Users", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { put "/api/v1/users/#{user_id}", params: { user: { name: '' } } }
+      before { put "/api/v1/users/#{user_id}", params: { user: { name: '' } }, headers: valid_headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -154,10 +163,22 @@ RSpec.describe "Api::V1::Users", type: :request do
 
   # destroy
   describe 'DELETE /plans/:id' do
-    before { delete "/api/v1/users/#{user_id}" }
+    context 'when not authorized' do
+      before { delete "/api/v1/users/#{user_id}" }
 
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
     end
-  end
+    
+    context 'when authorized' do
+      before { delete "/api/v1/users/#{user_id}", headers: valid_headers }
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
+    
+  end # end of destroy
+
 end
