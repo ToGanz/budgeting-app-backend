@@ -16,16 +16,6 @@ RSpec.describe Plan, type: :model do
     end
   end
 
-	context 'title is not unique' do
-    let(:user) { FactoryBot.create(:user) }
-    before { Plan.create(title: 'Same title', user: user) }
-    subject { Plan.create(title: 'Same title', user: user) }
-
-    it 'is not valid' do
-      expect(subject.errors[:title]).to include('has already been taken')
-    end
-  end
-
   context 'destroy plan should destroy linked transactions' do
     before { FactoryBot.create(:transaction, plan: subject) }
 
