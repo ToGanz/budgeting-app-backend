@@ -2,18 +2,39 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Transactions", type: :request do
   # Initialize the test data
-  let!(:plan) { create(:plan) }
-  let!(:category) { create(:category) }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
+  let!(:plan) { create(:plan, user_id: user.id) }
+  let!(:category) { create(:category, user_id: user.id) }
   let!(:transactions) { create_list(:transaction, 20, plan_id: plan.id) }
   let(:plan_id) { plan.id }
   let(:id) { transactions.first.id }
+  let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user.id) } }
 
   # index
   describe "GET /plans/:plan_id/transactions" do
-    # make HTTP get request before each example
-    before { get "/api/v1/plans/#{plan_id}/transactions"  }
+    context 'when not logged in' do
+      before { get "/api/v1/plans/#{plan_id}/transactions" }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when logged in as wrong user' do
+      before do 
+        get("/api/v1/plans/#{plan_id}/transactions",
+          headers: { Authorization: JsonWebToken.encode(user_id: user2.id) } 
+        )
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
 
     context 'when plan exists' do
+      before { get "/api/v1/plans/#{plan_id}/transactions", headers: valid_headers  }
 
       it 'returns transactions' do
         json_response = JSON.parse(response.body)
@@ -28,6 +49,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
     context 'when plan does not exist' do
       let(:plan_id) { 0 }
+      before { get "/api/v1/plans/#{plan_id}/transactions", headers: valid_headers  }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -42,7 +64,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
   # show
   describe "GET /plans/:plan_id/transactions/:id" do
-    before { get "/api//v1/plans/#{plan_id}/transactions/#{id}"}
+    before { get "/api//v1/plans/#{plan_id}/transactions/#{id}", headers: valid_headers }
 
     context 'when the record exists' do
       it 'returns the transaction' do
@@ -83,7 +105,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     end
 
     context 'when the request is valid' do
-      before { post "/api/v1/plans/#{plan_id}/transactions", params: valid_attributes }
+      before { post "/api/v1/plans/#{plan_id}/transactions", params: valid_attributes, headers: valid_headers }
 
       it 'creates a transaction' do
         json_response = JSON.parse(response.body)
@@ -96,7 +118,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post "/api/v1/plans/#{plan_id}/transactions", params: { transaction: { description: '' } } }
+      before { post "/api/v1/plans/#{plan_id}/transactions", params: { transaction: { description: '' } }, headers: valid_headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -113,7 +135,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     let(:valid_attributes) { { transaction: { description: 'Shopping' } } }
 
     context 'when the record exists' do
-      before { put "/api/v1/plans/#{plan_id}/transactions/#{id}", params: valid_attributes }
+      before { put "/api/v1/plans/#{plan_id}/transactions/#{id}", params: valid_attributes, headers: valid_headers }
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
@@ -126,7 +148,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { put "/api/v1/plans/#{plan_id}/transactions/#{id}", params: { transaction: { description: '' } } }
+      before { put "/api/v1/plans/#{plan_id}/transactions/#{id}", params: { transaction: { description: '' } }, headers: valid_headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -138,7 +160,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
     end
 
     context 'when the record does not exist' do
-      before { put "/api/v1/plans/#{plan_id}/transactions/#{100}", params: valid_attributes }
+      before { put "/api/v1/plans/#{plan_id}/transactions/#{100}", params: valid_attributes, headers: valid_headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -152,7 +174,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
   # destroy
   describe 'DELETE /plans/:plan_id/transactions/:id' do
-    before { delete "/api/v1/plans/#{plan_id}/transactions/#{id}" }
+    before { delete "/api/v1/plans/#{plan_id}/transactions/#{id}", headers: valid_headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
