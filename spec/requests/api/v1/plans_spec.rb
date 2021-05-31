@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "Api::V1::Plans", type: :request do
   # initialize test data
   let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let!(:plans) { create_list(:plan, 5, user_id: user.id) }
   let(:plan_id) { plans.first.id}
   let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user.id) } }
@@ -39,8 +40,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
 
   # show
   describe "GET /plans/:id" do
-    before { get "/api//v1/plans/#{plan_id}", headers: valid_headers }
-
+ 
     context 'when not logged in' do
       before { get "/api//v1/plans/#{plan_id}" }
 
@@ -49,7 +49,17 @@ RSpec.describe "Api::V1::Plans", type: :request do
       end
     end
 
+    context 'when logged in as wrong user' do
+      before { get "/api//v1/plans/#{plan_id}", headers: { Authorization: JsonWebToken.encode(user_id: user2.id) } }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
     context 'when the record exists' do
+      before { get "/api//v1/plans/#{plan_id}", headers: valid_headers }
+
       it 'returns the plan' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
@@ -63,6 +73,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
 
     context 'when the record does not exist' do
       let(:plan_id) { 100 }
+      before { get "/api//v1/plans/#{plan_id}", headers: valid_headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -126,6 +137,19 @@ RSpec.describe "Api::V1::Plans", type: :request do
       end
     end
 
+    context 'when logged in as wrong user' do
+      before do 
+        put("/api//v1/plans/#{plan_id}", 
+          params: valid_attributes, 
+          headers: { Authorization: JsonWebToken.encode(user_id: user2.id) } 
+        )
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
     context 'when the record exists' do
       before { put "/api/v1/plans/#{plan_id}", params: valid_attributes, headers: valid_headers }
 
@@ -168,6 +192,18 @@ RSpec.describe "Api::V1::Plans", type: :request do
   describe 'DELETE /plans/:id' do
     context 'when not logged in' do
       before { delete "/api/v1/plans/#{plan_id}" }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when logged in as wrong user' do
+      before do 
+        delete("/api//v1/plans/#{plan_id}", 
+          headers: { Authorization: JsonWebToken.encode(user_id: user2.id) } 
+        )
+      end
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)

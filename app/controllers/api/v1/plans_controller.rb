@@ -1,6 +1,7 @@
 class Api::V1::PlansController < ApplicationController
   before_action :set_plan, only: [:show, :update, :destroy]
   before_action :check_login
+  before_action :check_owner, only: [:show, :update, :destroy]
 
   def index
     plans = current_user.plans
@@ -42,5 +43,9 @@ class Api::V1::PlansController < ApplicationController
 
   def plan_params
     params.require(:plan).permit(:title)
+  end
+
+  def check_owner
+    head :forbidden unless @plan.user_id == current_user&.id
   end
 end
