@@ -49,8 +49,16 @@ RSpec.describe User, type: :model do
   context 'destroy user should destroy linked plans' do
     before { FactoryBot.create(:plan, user: subject) }
 
-    it 'is not valid' do
+    it 'deletes the plans' do
       expect { subject.destroy }.to change { Plan.count }.by(-1)
+    end
+  end
+
+  context 'destroy user should destroy linked categories' do
+    before { FactoryBot.create(:category, user: subject) }
+
+    it 'deletes the category' do
+      expect { subject.destroy }.to change { Category.count }.by(-1)
     end
   end
 end

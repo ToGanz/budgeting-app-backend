@@ -16,19 +16,10 @@ RSpec.describe Category, type: :model do
     end
   end
 
-	context 'name is not unique' do
-    before { Category.create(name: 'Same title') }
-    subject { Category.create(name: 'Same title') }
-
-    it 'is not valid' do
-      expect(subject.errors[:name]).to include('has already been taken')
-    end
-  end
-
   context 'destroy category should destroy linked transactions' do
     before { FactoryBot.create(:transaction, category: subject) }
 
-    it 'is not valid' do
+    it 'deletes the transaction' do
       expect { subject.destroy }.to change { Transaction.count }.by(-1)
     end
   end
