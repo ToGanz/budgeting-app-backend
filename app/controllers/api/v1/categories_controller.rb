@@ -1,8 +1,10 @@
 class Api::V1::CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :update, :destroy]
-  
+  before_action :check_login
+  before_action :check_owner, only: [:show, :update, :destroy]
+
   def index
-    categories = Category.all
+    categories = current_user.categories
     render json: categories, status: :ok
   end
 
@@ -11,7 +13,7 @@ class Api::V1::CategoriesController < ApplicationController
   end
 
   def create
-    category = Category.new(category_params)
+    category = current_user.categories.build(category_params)
 
     if category.save
       render json: category, status: :created
@@ -41,5 +43,9 @@ class Api::V1::CategoriesController < ApplicationController
 
   def category_params
     params.require(:category).permit(:name)
+  end
+
+  def check_owner
+    head :forbidden unless @category.user_id == current_user&.id
   end
 end
