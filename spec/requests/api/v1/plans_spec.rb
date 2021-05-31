@@ -5,29 +5,49 @@ RSpec.describe "Api::V1::Plans", type: :request do
   let(:user) { create(:user) }
   let!(:plans) { create_list(:plan, 5, user_id: user.id) }
   let(:plan_id) { plans.first.id}
-  let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user_id) } }
+  let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user.id) } }
 
   # index
   describe "GET /plans" do
-    # make HTTP get request before each example
-    before do 
-      get '/api/v1/plans'
+    context 'when not logged in' do
+      before do 
+        get '/api/v1/plans'
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
     end
 
-    it 'returns plans' do
-      json_response = JSON.parse(response.body)
-      expect(json_response).not_to be_empty
-      expect(json_response.size).to eq(5)
+    context 'when logged in' do
+      before do 
+        get '/api/v1/plans', headers: valid_headers
+      end
+
+      it 'returns plans' do
+        json_response = JSON.parse(response.body)
+        expect(json_response).not_to be_empty
+        expect(json_response.size).to eq(5)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
     end
 
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
-    end
   end
 
   # show
   describe "GET /plans/:id" do
-    before { get "/api//v1/plans/#{plan_id}"}
+    before { get "/api//v1/plans/#{plan_id}", headers: valid_headers }
+
+    context 'when not logged in' do
+      before { get "/api//v1/plans/#{plan_id}" }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
 
     context 'when the record exists' do
       it 'returns the plan' do
@@ -60,8 +80,16 @@ RSpec.describe "Api::V1::Plans", type: :request do
     # valid payload
     let(:valid_attributes) { { plan: { title: 'Personal Finance' } } }
 
-    context 'when the request is valid' do
+    context 'when not logged in' do
       before { post '/api/v1/plans', params: valid_attributes }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when the request is valid' do
+      before { post '/api/v1/plans', params: valid_attributes, headers: valid_headers }
 
       it 'creates a plan' do
         json_response = JSON.parse(response.body)
@@ -74,7 +102,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/api/v1/plans', params: { plan: { title: '' } } }
+      before { post '/api/v1/plans', params: { plan: { title: '' } }, headers: valid_headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -90,8 +118,16 @@ RSpec.describe "Api::V1::Plans", type: :request do
   describe 'PUT /plans/:id' do
     let(:valid_attributes) { { plan: { title: 'Shopping' } } }
 
-    context 'when the record exists' do
+    context 'when not logged in' do
       before { put "/api/v1/plans/#{plan_id}", params: valid_attributes }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when the record exists' do
+      before { put "/api/v1/plans/#{plan_id}", params: valid_attributes, headers: valid_headers }
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
@@ -104,7 +140,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { put "/api/v1/plans/#{plan_id}", params: { plan: { title: '' } } }
+      before { put "/api/v1/plans/#{plan_id}", params: { plan: { title: '' } }, headers: valid_headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -116,7 +152,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
     end
 
     context 'when the record does not exist' do
-      before { put "/api/v1/plans/#{100}", params: valid_attributes }
+      before { put "/api/v1/plans/#{100}", params: valid_attributes, headers: valid_headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -130,11 +166,22 @@ RSpec.describe "Api::V1::Plans", type: :request do
   
   # destroy
   describe 'DELETE /plans/:id' do
-    before { delete "/api/v1/plans/#{plan_id}" }
+    context 'when not logged in' do
+      before { delete "/api/v1/plans/#{plan_id}" }
 
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
     end
+
+    context 'when logged in' do
+      before { delete "/api/v1/plans/#{plan_id}", headers: valid_headers }
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
+
   end
   
 end

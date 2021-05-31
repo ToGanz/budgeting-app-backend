@@ -1,8 +1,9 @@
 class Api::V1::PlansController < ApplicationController
   before_action :set_plan, only: [:show, :update, :destroy]
-  
+  before_action :check_login
+
   def index
-    plans = Plan.all
+    plans = current_user.plans
     render json: plans, status: :ok
   end
 
@@ -11,7 +12,7 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def create
-    plan = Plan.new(plan_params)
+    plan = current_user.plans.build(plan_params)
 
     if plan.save
       render json: plan, status: :created
