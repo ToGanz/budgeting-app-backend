@@ -1,6 +1,5 @@
 class Api::V1::PlansController < ApplicationController
   before_action :set_plan, only: [:show, :update, :destroy]
-  before_action :check_login
   before_action :check_owner, only: [:show, :update, :destroy]
 
   def index

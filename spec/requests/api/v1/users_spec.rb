@@ -10,7 +10,17 @@ RSpec.describe "Api::V1::Users", type: :request do
   describe "GET /users/:id" do
     before { get "/api//v1/users/#{user_id}"}
 
+    context 'when not logged in' do
+      before { get "/api//v1/users/#{user_id}"}
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
     context 'when the record exists' do
+      before { get "/api//v1/users/#{user_id}", headers: valid_headers }
+
       it 'returns the user' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
@@ -24,6 +34,7 @@ RSpec.describe "Api::V1::Users", type: :request do
 
     context 'when the record does not exist' do
       let(:user_id) { 100 }
+      before { get "/api//v1/users/#{user_id}", headers: valid_headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -149,7 +160,7 @@ RSpec.describe "Api::V1::Users", type: :request do
     end
 
     context 'when the record does not exist' do
-      before { put "/api/v1/users/#{100}", params: valid_attributes }
+      before { put "/api/v1/users/#{100}", params: valid_attributes, headers: valid_headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)

@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  skip_before_action :check_login, only: [:create]
   before_action :set_user, only: [:show, :update, :destroy]
   before_action :check_owner, only: [:update, :destroy]
 
