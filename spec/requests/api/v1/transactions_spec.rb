@@ -9,6 +9,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
   let!(:transactions) { create_list(:transaction, 20, plan_id: plan.id) }
   let(:plan_id) { plan.id }
   let(:id) { transactions.first.id }
+  let(:transaction) { transactions.first }
   let(:valid_headers) { { Authorization: JsonWebToken.encode(user_id: user.id) } }
 
   # index
@@ -68,9 +69,13 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
     context 'when the record exists' do
       it 'returns the transaction' do
-        json_response = JSON.parse(response.body)
+        json_response = JSON.parse(response.body, symbolize_names: true)
+
         expect(json_response).not_to be_empty
-        expect(json_response['data']['id']).to eq(id.to_s)
+        expect(json_response.dig(:data, :id)).to eq(id.to_s)
+        expect(json_response.dig(:data, :attributes, :description)).to eq(transaction.description)
+        expect(json_response.dig(:data, :attributes, :spending)).to eq(transaction.spending)
+        expect(json_response.dig(:data, :relationships, :category, :data, :id)).to eq(transaction.category.id.to_s)
       end
 
       it 'returns status code 200' do
