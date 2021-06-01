@@ -39,7 +39,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
       it 'returns transactions' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
-        expect(json_response.size).to eq(20)
+        expect(json_response['data'].size).to eq(20)
       end
 
       it 'returns status code 200' do
@@ -70,7 +70,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
       it 'returns the transaction' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
-        expect(json_response['id']).to eq(id)
+        expect(json_response['data']['id']).to eq(id.to_s)
       end
 
       it 'returns status code 200' do
@@ -109,7 +109,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
       it 'creates a transaction' do
         json_response = JSON.parse(response.body)
-        expect(json_response['description']).to eq('Groceries')
+        expect(json_response['data']['attributes']['description']).to eq('Groceries')
       end
 
       it 'returns status code 201' do
@@ -139,7 +139,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
-        expect(json_response['description']).to eq('Shopping')
+        expect(json_response['data']['attributes']['description']).to eq('Shopping')
       end
 
       it 'returns status code 200' do

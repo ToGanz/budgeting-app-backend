@@ -5,18 +5,18 @@ class Api::V1::TransactionsController < ApplicationController
 
   def index
     transactions = @plan.transactions
-    render json: transactions, status: :ok
+    render json: serialize(transactions), status: :ok
   end
 
   def show
-    render json: @transaction, status: :ok
+    render json: serialize(@transaction), status: :ok
   end
 
   def create
     transaction = @plan.transactions.build(transaction_params)
 
     if transaction.save
-      render json: transaction, status: :created
+      render json: serialize(transaction), status: :created
     else
       render json: { errors: transaction.errors }, status: :unprocessable_entity
     end
@@ -24,7 +24,7 @@ class Api::V1::TransactionsController < ApplicationController
 
   def update
     if @transaction.update(transaction_params)
-      render json: @transaction, status: :ok
+      render json: serialize(@transaction), status: :ok
     else
       render json: { errors: @transaction.errors }, status: :unprocessable_entity
     end
@@ -51,5 +51,9 @@ class Api::V1::TransactionsController < ApplicationController
 
   def check_owner
     head :forbidden unless @plan.user_id == current_user&.id
+  end
+
+  def serialize(object)
+    TransactionSerializer.new(object).serializable_hash.to_json
   end
 end
