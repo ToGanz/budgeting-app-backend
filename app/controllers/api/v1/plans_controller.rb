@@ -4,18 +4,18 @@ class Api::V1::PlansController < ApplicationController
 
   def index
     plans = current_user.plans
-    render json: plans, status: :ok
+    render json: serialize(plans), status: :ok
   end
 
   def show
-    render json: @plan, status: :ok
+    render json: serialize(@plan), status: :ok
   end
 
   def create
     plan = current_user.plans.build(plan_params)
 
     if plan.save
-      render json: plan, status: :created
+      render json: serialize(plan), status: :created
     else
       render json: { errors: plan.errors }, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class Api::V1::PlansController < ApplicationController
 
   def update
     if @plan.update(plan_params)
-      render json: @plan, status: :ok
+      render json: serialize(@plan), status: :ok
     else
       render json: { errors: @plan.errors }, status: :unprocessable_entity
     end
@@ -46,5 +46,9 @@ class Api::V1::PlansController < ApplicationController
 
   def check_owner
     head :forbidden unless @plan.user_id == current_user&.id
+  end
+
+  def serialize(object)
+    PlanSerializer.new(object).serializable_hash.to_json
   end
 end

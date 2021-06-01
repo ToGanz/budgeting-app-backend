@@ -28,7 +28,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
       it 'returns plans' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
-        expect(json_response.size).to eq(5)
+        expect(json_response['data'].size).to eq(5)
       end
 
       it 'returns status code 200' do
@@ -63,7 +63,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
       it 'returns the plan' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
-        expect(json_response['id']).to eq(plan_id)
+        expect(json_response['data']['id']).to eq(plan_id.to_s)
       end
 
       it 'returns status code 200' do
@@ -104,7 +104,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
 
       it 'creates a plan' do
         json_response = JSON.parse(response.body)
-        expect(json_response['title']).to eq('Personal Finance')
+        expect(json_response['data']['attributes']['title']).to eq('Personal Finance')
       end
 
       it 'returns status code 201' do
@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::Plans", type: :request do
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
-        expect(json_response['title']).to eq('Shopping')
+        expect(json_response['data']['attributes']['title']).to eq('Shopping')
       end
 
       it 'returns status code 200' do
