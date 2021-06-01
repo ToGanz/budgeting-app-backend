@@ -4,18 +4,18 @@ class Api::V1::CategoriesController < ApplicationController
 
   def index
     categories = current_user.categories
-    render json: categories, status: :ok
+    render json: serialize(categories), status: :ok
   end
 
   def show
-    render json: @category, status: :ok
+    render json: serialize(@category), status: :ok
   end
 
   def create
     category = current_user.categories.build(category_params)
 
     if category.save
-      render json: category, status: :created
+      render json: serialize(category), status: :created
     else
       render json: { errors: category.errors }, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class Api::V1::CategoriesController < ApplicationController
 
   def update
     if @category.update(category_params)
-      render json: @category, status: :ok
+      render json: serialize(@category), status: :ok
     else
       render json: { errors: @category.errors }, status: :unprocessable_entity
     end
@@ -46,5 +46,9 @@ class Api::V1::CategoriesController < ApplicationController
 
   def check_owner
     head :forbidden unless @category.user_id == current_user&.id
+  end
+
+  def serialize(object)
+    CategorySerializer.new(object).serializable_hash.to_json
   end
 end
