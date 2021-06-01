@@ -51,3 +51,5 @@ gem 'pry'
 
 # adds encode and decode methods
 gem "jwt", "~> 2.2"
+
+gem "jsonapi-serializer", "~> 2.2"
