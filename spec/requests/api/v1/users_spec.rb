@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Users", type: :request do
       it 'returns the user' do
         json_response = JSON.parse(response.body)
         expect(json_response).not_to be_empty
-        expect(json_response['id']).to eq(user_id)
+        expect(json_response['data']['id']).to eq(user_id.to_s)
       end
 
       it 'returns status code 200' do
@@ -65,7 +65,7 @@ RSpec.describe "Api::V1::Users", type: :request do
 
       it 'creates a user' do
         json_response = JSON.parse(response.body)
-        expect(json_response['name']).to eq('tobi')
+        expect(json_response['data']['attributes']['name']).to eq('tobi')
       end
 
       it 'returns status code 201' do
@@ -139,7 +139,7 @@ RSpec.describe "Api::V1::Users", type: :request do
 
       it 'updates the record' do
         json_response = JSON.parse(response.body)
-        expect(json_response['name']).to eq('thilo')
+        expect(json_response['data']['attributes']['name']).to eq('thilo')
       end
 
       it 'returns status code 200' do
