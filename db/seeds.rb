@@ -6,16 +6,12 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.delete_all
 user = User.create!(name: 'test1',
         email: 'test@test.com',
         password: 'password')
 
-Plan.delete_all 
 plan = Plan.create!(title: 'plan1', user_id: user.id)
 
-Category.delete_all
-Transaction.delete_all
 3.times do
   category = Category.create!(name: Faker::Commerce.product_name, user_id: user.id)
  
