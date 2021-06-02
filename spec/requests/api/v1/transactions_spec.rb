@@ -38,9 +38,37 @@ RSpec.describe "Api::V1::Transactions", type: :request do
       before { get "/api/v1/plans/#{plan_id}/transactions", headers: valid_headers  }
 
       it 'returns transactions' do
-        json_response = JSON.parse(response.body)
+        json_response = JSON.parse(response.body, symbolize_names: true)
         expect(json_response).not_to be_empty
-        expect(json_response['data'].size).to eq(20)
+        expect(json_response.dig(:data).size).to eq(20)
+        expect(json_response.dig(:links, :first)).to eq("/api/v1/plans/#{plan_id}/transactions?page=1")
+        expect(json_response.dig(:links, :last)).to eq("/api/v1/plans/#{plan_id}/transactions?page=1")
+        expect(json_response.dig(:links, :prev)).to eq("/api/v1/plans/#{plan_id}/transactions")
+        expect(json_response.dig(:links, :next)).to eq("/api/v1/plans/#{plan_id}/transactions")
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'with pagination' do
+      before do 
+        get("/api/v1/plans/#{plan_id}/transactions", 
+          params: { page: 1, per_page: 5 }, 
+          headers: valid_headers
+        )
+      end
+
+      it 'returns pagination links' do
+        json_response = JSON.parse(response.body, symbolize_names: true)
+        expect(json_response.dig(:links, :first)).to eq("/api/v1/plans/#{plan_id}/transactions?page=1")
+        expect(json_response.dig(:links, :last)).to eq("/api/v1/plans/#{plan_id}/transactions?page=4")
+        expect(json_response.dig(:links, :prev)).to eq("/api/v1/plans/#{plan_id}/transactions")
+        expect(json_response.dig(:links, :next)).to eq("/api/v1/plans/#{plan_id}/transactions?page=2")
+        # assert_not_nil json_response.dig(:links, :last) 
+        # assert_not_nil json_response.dig(:links, :prev) 
+        # assert_not_nil json_response.dig(:links, :next)
       end
 
       it 'returns status code 200' do

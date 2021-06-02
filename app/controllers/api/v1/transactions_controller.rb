@@ -1,11 +1,22 @@
 class Api::V1::TransactionsController < ApplicationController
+  include Paginable
+
   before_action :set_plan
   before_action :set_transaction, only: [:show, :update, :destroy]
   before_action :check_owner
 
   def index
-    transactions = @plan.transactions
-    render json: serialize(transactions), status: :ok
+    transactions = @plan.transactions.page(current_page).per(per_page)
+    options = {
+      links: {
+        first: api_v1_plan_transactions_path(page: 1),
+        last: api_v1_plan_transactions_path(page: transactions.total_pages), 
+        prev: api_v1_plan_transactions_path(page: transactions.prev_page), 
+        next: api_v1_plan_transactions_path(page: transactions.next_page),
+      }
+    }
+
+    render json: serialize(transactions, options), status: :ok
   end
 
   def show
@@ -53,7 +64,7 @@ class Api::V1::TransactionsController < ApplicationController
     head :forbidden unless @plan.user_id == current_user&.id
   end
 
-  def serialize(object)
-    TransactionSerializer.new(object).serializable_hash.to_json
+  def serialize(object, options = {})
+    TransactionSerializer.new(object, options).serializable_hash.to_json
   end
 end
