@@ -6,8 +6,9 @@ class Api::V1::TransactionsController < ApplicationController
   before_action :check_owner
 
   def index
-    transactions = @plan.transactions.page(current_page).per(per_page)
+    transactions = @plan.transactions.includes([:category]).page(current_page).per(per_page)
     options = {
+      include: [:category],
       links: {
         first: api_v1_plan_transactions_path(page: 1),
         last: api_v1_plan_transactions_path(page: transactions.total_pages), 

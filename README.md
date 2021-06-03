@@ -305,7 +305,7 @@ Example Response:
 }
 ```
 
-### Delete User
+### Delete Plan
 
 You can only delete your own plan.
 
@@ -317,4 +317,355 @@ Parameters: Id
 
 
 
+## Categories
 
+### Create Category
+
+Endpoint: POST /api/v1/categories
+
+Attributes: Name
+
+Example Requestbody:
+```
+{
+  "category": {
+      "name": "Groceries"
+  }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "5",
+    "type": "category",
+    "attributes": {
+      "name": "Groceries"
+    }
+  }
+}
+```
+
+### Index Category
+
+You can only view your own categories.
+
+Endpoint: GET /api/v1/categories
+
+
+Example Response:
+```
+{
+  "data": [
+     {
+      "id": "1",
+      "type": "category",
+      "attributes": {
+        "name": "Synergistic Wooden Lamp"
+      }
+    },
+    {
+      "id": "2",
+      "type": "category",
+      "attributes": {
+        "name": "Rustic Paper Hat"
+      }
+    },
+    {
+      "id": "3",
+      "type": "category",
+      "attributes": {
+        "name": "Synergistic Marble Gloves"
+      }
+    }
+  ]
+}
+```
+
+### Show Category
+
+You can only view your own category.
+
+Endpoint: GET /api/v1/categories/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Example Response:
+```
+{
+  "data": {
+    "id": "5",
+    "type": "category",
+    "attributes": {
+      "name": "Groceries"
+    }
+  }
+}
+```
+
+
+### Edit Category
+
+You can only your own category.
+
+Endpoint: PUT /api/v1/categories/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Attributes: Name
+
+Example Requestbody:
+```
+{
+  "category": {
+      "name": "New Category"
+  }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "5",
+    "type": "category",
+    "attributes": {
+      "name": "New Category"
+    }
+  }
+}
+```
+
+### Delete Category
+
+You can only delete your own category.
+
+Endpoint: DELETE /api/v1/categories/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+
+
+## Transactions
+
+Transactions are nested within plans and must have a valid category.
+
+### Create Transaction
+
+Endpoint: POST /api/v1/plans/:plan_id/transactions
+
+Attributes: Description, Amount, CategoryId
+
+Parameters: PlanId
+
+
+Example Requestbody:
+```
+{ 
+    "transaction": { 
+        "description": "Groceries",
+        "amount": "12.00",
+        "category_id": "1"
+    } 
+ } 
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "7",
+    "type": "transaction",
+    "attributes": {
+      "description": "Groceries",
+      "spending": false,
+      "amount": "12.0",
+      "created_at": "2021-06-03T02:56:59.984Z"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "id": "1",
+          "type": "category"
+        }
+      }
+    }
+  }
+}
+```
+
+### Index Transaction
+
+You can only view your own transactions.
+Categories are included for transactions.
+Transactions are paginated. If no "page" parameter is provided the first page is provided. If no "per_page" parameter is provied 20 transactions per page are returned.
+
+Endpoint: GET /api/v1/plans/:plan_id/transactions
+
+Parameters: PlanId, page, per_page
+
+Example Response:
+```
+{
+  "data": [
+    {
+      "id": "1",
+      "type": "transaction",
+      "attributes": {
+        "description": "Fantastic Bronze Plate",
+        "spending": false,
+        "amount": "94.71122790354497",
+        "created_at": "2021-06-02T03:19:44.069Z"
+      },
+      "relationships": {
+        "category": {
+          "data": {
+            "id": "1",
+            "type": "category"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "transaction",
+      "attributes": {
+        "description": "Small Concrete Pants",
+        "spending": false,
+        "amount": "55.94673861189192",
+        "created_at": "2021-06-02T03:19:44.095Z"
+      },
+      "relationships": {
+        "category": {
+          "data": {
+            "id": "2",
+            "type": "category"
+          }
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "transaction",
+      "attributes": {
+        "description": "Synergistic Cotton Knife",
+        "spending": false,
+        "amount": "87.78365253704193",
+        "created_at": "2021-06-02T03:19:44.118Z"
+      },
+      "relationships": {
+        "category": {
+          "data": {
+            "id": "3",
+            "type": "category"
+          }
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "1",
+      "type": "category",
+      "attributes": {
+        "name": "Synergistic Wooden Lamp"
+      }
+    },
+    {
+      "id": "2",
+      "type": "category",
+      "attributes": {
+        "name": "Rustic Paper Hat"
+      }
+    },
+    {
+      "id": "3",
+      "type": "category",
+      "attributes": {
+        "name": "Synergistic Marble Gloves"
+      }
+    }
+  ],
+  "links": {
+    "first": "/api/v1/plans/1/transactions?page=1",
+    "last": "/api/v1/plans/1/transactions?page=1",
+    "prev": "/api/v1/plans/1/transactions",
+    "next": "/api/v1/plans/1/transactions"
+  }
+}
+```
+
+### Show Plan
+
+You can only view your own plan.
+
+Endpoint: GET /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "plan",
+    "attributes": {
+      "title": "plan 1"
+    }
+  }
+}
+```
+
+
+### Edit Plan
+
+You can only your own plan.
+
+Endpoint: PUT /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Attributes: Title
+
+Example Requestbody:
+```
+{
+    "plan": {
+        "title": "new Plan"
+    }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "plan",
+    "attributes": {
+      "title": "new Plan"
+    }
+  }
+}
+```
+
+### Delete Plan
+
+You can only delete your own plan.
+
+Endpoint: DELETE /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id

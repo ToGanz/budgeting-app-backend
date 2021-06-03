@@ -6,7 +6,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
   let(:user2) { create(:user) }
   let!(:plan) { create(:plan, user_id: user.id) }
   let!(:category) { create(:category, user_id: user.id) }
-  let!(:transactions) { create_list(:transaction, 20, plan_id: plan.id) }
+  let!(:transactions) { create_list(:transaction, 20, plan_id: plan.id, category_id: category.id ) }
   let(:plan_id) { plan.id }
   let(:id) { transactions.first.id }
   let(:transaction) { transactions.first }
@@ -41,6 +41,7 @@ RSpec.describe "Api::V1::Transactions", type: :request do
         json_response = JSON.parse(response.body, symbolize_names: true)
         expect(json_response).not_to be_empty
         expect(json_response.dig(:data).size).to eq(20)
+        expect(json_response.dig(:included).size).to eq(1)
         expect(json_response.dig(:links, :first)).to eq("/api/v1/plans/#{plan_id}/transactions?page=1")
         expect(json_response.dig(:links, :last)).to eq("/api/v1/plans/#{plan_id}/transactions?page=1")
         expect(json_response.dig(:links, :prev)).to eq("/api/v1/plans/#{plan_id}/transactions")
