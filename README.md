@@ -521,7 +521,7 @@ Example Response:
       "attributes": {
         "description": "Fantastic Bronze Plate",
         "spending": false,
-        "amount": "94.71122790354497",
+        "amount": "94.71",
         "created_at": "2021-06-02T03:19:44.069Z"
       },
       "relationships": {
@@ -539,7 +539,7 @@ Example Response:
       "attributes": {
         "description": "Small Concrete Pants",
         "spending": false,
-        "amount": "55.94673861189192",
+        "amount": "55.94",
         "created_at": "2021-06-02T03:19:44.095Z"
       },
       "relationships": {
@@ -557,7 +557,7 @@ Example Response:
       "attributes": {
         "description": "Synergistic Cotton Knife",
         "spending": false,
-        "amount": "87.78365253704193",
+        "amount": "87.78",
         "created_at": "2021-06-02T03:19:44.118Z"
       },
       "relationships": {
@@ -602,70 +602,94 @@ Example Response:
 }
 ```
 
-### Show Plan
+### Show Transaction
 
-You can only view your own plan.
+You can only view your own transaction.
 
-Endpoint: GET /api/v1/plans/:id
+Endpoint: GET /api/v1/plans/:plan_id/transactions/:id
 
 Headers: "Authorization": "YourJWT"
 
-Parameters: Id
+Parameters: PlanId, Id
 
 Example Response:
 ```
 {
   "data": {
-    "id": "2",
-    "type": "plan",
+    "id": "7",
+    "type": "transaction",
     "attributes": {
-      "title": "plan 1"
+      "description": "Groceries",
+      "spending": false,
+      "amount": "12.0",
+      "created_at": "2021-06-03T02:56:59.984Z"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "id": "1",
+          "type": "category"
+        }
+      }
     }
   }
 }
 ```
 
 
-### Edit Plan
+### Edit Transaction
 
-You can only your own plan.
+You can only your own transaction.
 
-Endpoint: PUT /api/v1/plans/:id
+Endpoint: PUT /api/v1/plans/:plan_id/transactions/:id
 
 Headers: "Authorization": "YourJWT"
 
-Parameters: Id
+Parameters: PlanId, Id
 
-Attributes: Title
+Attributes: Description, Amount, Category_id
 
 Example Requestbody:
 ```
-{
-    "plan": {
-        "title": "new Plan"
-    }
-}
+{ 
+    "transaction": { 
+        "description": "New transaction",
+        "amount": "12.00",
+        "category_id": "1"
+    } 
+ } 
 ```
 
 Example Response:
 ```
 {
   "data": {
-    "id": "2",
-    "type": "plan",
+    "id": "7",
+    "type": "transaction",
     "attributes": {
-      "title": "new Plan"
+      "description": "New transaction",
+      "spending": false,
+      "amount": "12.0",
+      "created_at": "2021-06-03T02:56:59.984Z"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "id": "1",
+          "type": "category"
+        }
+      }
     }
   }
 }
 ```
 
-### Delete Plan
+### Delete Transaction
 
-You can only delete your own plan.
+You can only delete your own transaction.
 
-Endpoint: DELETE /api/v1/plans/:id
+Endpoint: DELETE /api/v1/plans/:plan_id/transactions/:id
 
 Headers: "Authorization": "YourJWT"
 
-Parameters: Id
+Parameters: PlanId, Id
