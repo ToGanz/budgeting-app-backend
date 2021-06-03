@@ -110,7 +110,6 @@ Example Requestbody:
 Example Response:
 ```
 {
-  "auth_token": "yourToken",
-  "email": "test@test.com"
+  "auth_token": "yourToken"
 }
 ```

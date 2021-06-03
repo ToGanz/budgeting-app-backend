@@ -5,7 +5,7 @@ class Api::V1::AuthenticationsController < ApplicationController
     @user = User.find_by_email(user_params[:email]) 
     if @user && @user.authenticate(user_params[:password])
       render json: {
-        auth_token: JsonWebToken.encode(user_id: @user.id), email: @user.email
+        auth_token: JsonWebToken.encode(user_id: @user.id)
       }
     else
       render json: { errors: 'Invalid credentials.' }, status: :unauthorized
