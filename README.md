@@ -187,3 +187,134 @@ Headers: "Authorization": "YourJWT"
 Parameters: Id
 
 
+
+## Plans
+
+### Create Plan
+
+Endpoint: POST /api/v1/plans
+
+Attributes: Title
+
+Example Requestbody:
+```
+{
+  "plan": {
+      "title": "plan 1"
+  }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "plan",
+    "attributes": {
+      "title": "plan 1"
+    }
+  }
+}
+```
+
+### Index Plan
+
+You can only view your own plans.
+
+Endpoint: GET /api/v1/plans
+
+
+Example Response:
+```
+{
+  "data": [
+    {
+      "id": "1",
+      "type": "plan",
+      "attributes": {
+        "title": "Plan it"
+      }
+    },
+    {
+      "id": "2",
+      "type": "plan",
+      "attributes": {
+        "title": "plan 1"
+      }
+    }
+  ]
+}
+```
+
+### Show Plan
+
+You can only view your own plan.
+
+Endpoint: GET /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "plan",
+    "attributes": {
+      "title": "plan 1"
+    }
+  }
+}
+```
+
+
+### Edit Plan
+
+You can only your own plan.
+
+Endpoint: PUT /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Attributes: Title
+
+Example Requestbody:
+```
+{
+    "plan": {
+        "title": "new Plan"
+    }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "plan",
+    "attributes": {
+      "title": "new Plan"
+    }
+  }
+}
+```
+
+### Delete User
+
+You can only delete your own plan.
+
+Endpoint: DELETE /api/v1/plans/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+
+
+
