@@ -62,9 +62,10 @@ To use the functionality of the api, you first have to create an account and log
 ### Sign up
 
 Endpoint: POST /api/v1/users
-Parameters: Name, Email, Password
 
-Example Request:
+Attributes: Name, Email, Password
+
+Example Requestbody:
 ```
 {
     "user": {
@@ -86,5 +87,30 @@ Example Response:
       "email": "test@test.com"
     }
   }
+}
+```
+
+
+### Login
+
+Endpoint: POST /api/v1/auth/login
+
+Attributes: Email, Password
+
+Example Requestbody:
+```
+{
+    "user": {
+        "email": "test@test.com",
+        "password": "password"
+    }
+}
+```
+
+Example Response:
+```
+{
+  "auth_token": "yourToken",
+  "email": "test@test.com"
 }
 ```
