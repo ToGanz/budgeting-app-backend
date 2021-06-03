@@ -29,7 +29,7 @@ The api exposes the following resources:
 
 A user can have many budgeting plans. A plan has many transactions and a Transaction has one category.
 
-To use the functionality of the api, you first have to create an account and login. The login returns a JSON Web Token. This token has to be used in the header under the "authorization" key.
+To use the functionality of the api, you first have to create an account and login. The login returns a JSON Web Token. This token has to be used in the header under the "Authorization" key.
 
 * [Users](#users)
   * [Sign up](#sign-up)
@@ -83,7 +83,7 @@ Example Response:
     "id": "1",
     "type": "user",
     "attributes": {
-      "name": "User1",
+      "name": "test1",
       "email": "test@test.com"
     }
   }
@@ -113,3 +113,77 @@ Example Response:
   "auth_token": "yourToken"
 }
 ```
+
+Use this token for future requests. It has an expiration date of 24 hours.
+
+
+### Show User
+
+You can only view the authenticated user
+
+Endpoint: GET /api/v1/users/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "user",
+    "attributes": {
+      "name": "test1",
+      "email": "test@test.com"
+    }
+  }
+}
+```
+
+### Edit User
+
+You can only edit the authenticated user
+
+Endpoint: PUT /api/v1/users/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+Attributes: Name, Email, Password
+
+Example Requestbody:
+```
+{
+  "user": {
+      "name": "newName"
+  }
+}
+```
+
+Example Response:
+```
+{
+  "data": {
+    "id": "2",
+    "type": "user",
+    "attributes": {
+      "name": "newName",
+      "email": "test@test.com"
+    }
+  }
+}
+```
+
+### Delete User
+
+You can only delete the authenticated user
+
+Endpoint: DELETE /api/v1/users/:id
+
+Headers: "Authorization": "YourJWT"
+
+Parameters: Id
+
+
