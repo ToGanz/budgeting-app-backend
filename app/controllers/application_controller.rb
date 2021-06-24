@@ -26,6 +26,6 @@ class ApplicationController < ActionController::API
   end
 
   def decode_error(e)
-    render json: { errors: e.to_s }, status: :unprocessable_entity
+    render json: { errors: e.to_s }, status: :forbidden
   end
 end
