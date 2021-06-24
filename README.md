@@ -111,6 +111,7 @@ Example Response:
 ```
 {
   "auth_token": "yourToken",
+  "id": "1",
   "name": "User1",
   "email": "test@test.com"
 }
