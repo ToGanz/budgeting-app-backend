@@ -6,6 +6,7 @@ class Api::V1::AuthenticationsController < ApplicationController
     if @user && @user.authenticate(user_params[:password])
       render json: {
         auth_token: JsonWebToken.encode(user_id: @user.id),
+        id: @user.id,
         email: @user.email,
         name: @user.name
       }
