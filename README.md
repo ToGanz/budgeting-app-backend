@@ -12,11 +12,16 @@ Technologies used:
 
 
 
-I built this app to get familiar with using rails as an API. I plan to use it as a backend for a budgeting app I want to build with vue.js. 
+I built this app to get familiar with using rails as an API. 
 The API uses JSON Web Token for authentication.
+
+The API is consumed in a Vue.js SPA ([https://github.com/ToGanz/budgeting-app]) 
+
 
 
 Live on: [https://tg-budgeting-app-backend.herokuapp.com/]
+
+(Free Plan: first hit takes a few seconds)
 
 ## Resources
 
